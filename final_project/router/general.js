@@ -1,5 +1,8 @@
 const express = require("express");
-let books = require("./booksdb.js");
+const axios = require("axios");
+const { getBooks } = require("./booksdb.js");
+
+let books = require("./booksdb.js").books;
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
@@ -23,22 +26,33 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get("/", function (req, res) {
+public_users.get("/", async function (req, res) {
   //Write your code here
-  return res.status(300).json(books);
+  let books = await getBooks();
+  return res.status(200).json(books);
 });
 
 // Get book details based on ISBN
-public_users.get("/isbn/:isbn", function (req, res) {
-  //Write your code
-  isbn = req.params["isbn"];
-  return res.status(300).json({ [isbn]: books[parseInt(isbn)] });
+public_users.get("/isbn/:isbn", async function (req, res) {
+  //Write your code here
+  let isbn = parseInt(req.params.isbn);
+  let t = await axios.get("http://localhost:5000");
+  let books = t["data"];
+  // console.log(books['data'])
+  // res.json(books)
+  if (isbn < 1 || isbn > 10) {
+    return res.status(400).json({ msg: "Invalid ISBN" });
+  }
+  return res.status(200).json({ [isbn]: books[req.params.isbn] });
 });
 
 // Get book details based on author
-public_users.get("/author/:author", function (req, res) {
+public_users.get("/author/:author", async function (req, res) {
   //Write your code here
+
   author = req.params["author"];
+  let t = await axios.get("http:localhost:5000");
+  let books = t["data"];
   bookList = {};
   i = 0;
   for (const key in books) {
@@ -52,9 +66,11 @@ public_users.get("/author/:author", function (req, res) {
 });
 
 // Get all books based on title
-public_users.get("/title/:title", function (req, res) {
+public_users.get("/title/:title", async function (req, res) {
   //Write your code here
   title = req.params["title"];
+  let t = await axios.get("http:localhost:5000");
+  let books = t["data"];
   for (const key in books) {
     if (title === books[key].title) {
       return res.status(300).json(books[key]);
