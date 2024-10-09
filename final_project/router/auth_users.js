@@ -50,7 +50,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   let username = JSON.parse(atob(token.split(".")[1]))["username"];
   book = books[isbn];
   book["reviews"][username] = review;
-  return res.status(300).send(book);
+  return res.status(200).send(book);
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
@@ -60,7 +60,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   let book = books[isbn];
   if (username in book["reviews"]) {
     delete book["reviews"][username];
-    return res.status(300).send(book);
+    return res.status(200).send(book);
   } else {
     return res.send("there is no review by user");
   }

@@ -12,7 +12,7 @@ public_users.post("/register", (req, res) => {
   user = req.query;
   if (isValid(user["username"]) == false) {
     return res
-      .status(300)
+      .status(200)
       .send({ message: "Username already exists", registered_users: users });
   } else if (user["username"].length < 1 || user["password"].length < 1) {
     return res.status(300).send("please fill everything");
@@ -62,7 +62,7 @@ public_users.get("/author/:author", async function (req, res) {
       bookList[i]["isbn"] = key;
     }
   }
-  return res.status(300).json(bookList);
+  return res.status(200).json(bookList);
 });
 
 // Get all books based on title
@@ -73,7 +73,7 @@ public_users.get("/title/:title", async function (req, res) {
   let books = t["data"];
   for (const key in books) {
     if (title === books[key].title) {
-      return res.status(300).json(books[key]);
+      return res.status(200).json(books[key]);
     }
   }
 });
@@ -81,7 +81,7 @@ public_users.get("/title/:title", async function (req, res) {
 //  Get book review
 public_users.get("/review/:isbn", function (req, res) {
   //Write your code here
-  return res.status(300).json(books[req.params["isbn"]].reviews);
+  return res.status(200).json(books[req.params["isbn"]].reviews);
 });
 
 module.exports.general = public_users;
